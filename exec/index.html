@@ -224,12 +224,15 @@ h1{font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing:-.03em;margin:.35
   },{rootMargin:'-25% 0px -60% 0px'});
   document.querySelectorAll('.card').forEach(function(c){io.observe(c);});
   var bar=document.getElementById('pbar'), btn=document.getElementById('top');
-  addEventListener('scroll',function(){
-    var de=document.documentElement;
-    var m=de.scrollHeight-de.clientHeight;
-    bar.style.width=(m>0?(de.scrollTop/m*100):0)+'%';
-    btn.classList.toggle('on',de.scrollTop>1100);
-  },{passive:true});
+  function onScroll(){
+    var de=document.documentElement, se=document.scrollingElement||de;
+    var y=window.pageYOffset||se.scrollTop||0;
+    var docH=Math.max(document.body.scrollHeight,de.scrollHeight,se.scrollHeight);
+    var m=docH-window.innerHeight;
+    bar.style.width=(m>0?Math.min(100,y/m*100):0)+'%';
+    btn.classList.toggle('on',y>1100);
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
   btn.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'});});
 })();
 </script>
